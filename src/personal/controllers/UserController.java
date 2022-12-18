@@ -14,7 +14,7 @@ public class UserController {
 
     public void saveUser(User user) {
         validateUserData(user);
-        repository.CreateUser(user);
+        repository.createUser(user);
     }
 
     public User readUser(String userId) throws Exception {
@@ -42,5 +42,8 @@ public class UserController {
         repository.updateUser(user);
     }
 
+    public void deleteUser(String id){
+        repository.deleteUser(id);
+    }
 
 }

@@ -3,11 +3,11 @@ package personal.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RepositoryFile implements Repository {
-    private UserMapper mapper = new UserMapper();
+public class RepositoryFileCsv implements Repository {
+    private UserMapperCsv mapper = new UserMapperCsv();
     private FileOperation fileOperation;
 
-    public RepositoryFile(FileOperation fileOperation) {
+    public RepositoryFileCsv(FileOperation fileOperation) {
         this.fileOperation = fileOperation;
     }
 
@@ -16,7 +16,9 @@ public class RepositoryFile implements Repository {
         List<String> lines = fileOperation.readAllLines();
         List<User> users = new ArrayList<>();
         for (String line : lines) {
-            users.add(mapper.map(line));
+            if (!line.isEmpty()) {
+                users.add(mapper.map(line));
+            }
         }
         return users;
     }
@@ -28,7 +30,7 @@ public class RepositoryFile implements Repository {
         int max = 0;
         for (User item : users) {
             int id = Integer.parseInt(item.getId());
-            if (max < id) {
+            if (max < id){
                 max = id;
             }
         }
@@ -50,15 +52,15 @@ public class RepositoryFile implements Repository {
         saveUsers(users);
     }
 
-    public void deleteUser(String userId) {
+    public void deleteUser(String userID) {
         List<User> users = getAllUsers();
-        users.remove(findUser(userId, users));
+        users.remove(findUser(userID, users));
         saveUsers(users);
     }
 
-    private User findUser(String userId, List<User> users) {
+    private User findUser(String userID, List<User> users) {
         for (User user : users) {
-            if (user.getId().equals(userId)) {
+            if (user.getId().equals(userID)) {
                 return user;
             }
         }
@@ -67,8 +69,9 @@ public class RepositoryFile implements Repository {
 
     private void saveUsers(List<User> users) {
         List<String> lines = new ArrayList<>();
-        for (User item : users) {
+        for (User item: users) {
             lines.add(mapper.map(item));
+            lines.add("");
         }
         fileOperation.saveAllLines(lines);
     }

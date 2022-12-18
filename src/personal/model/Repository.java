@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface Repository {
     List<User> getAllUsers();
-    String CreateUser(User user);
+    String createUser(User user);
     void updateUser(User user);
     void deleteUser(String userId);
 }
