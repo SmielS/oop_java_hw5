@@ -28,7 +28,7 @@ public class RepositoryFile implements Repository {
         int max = 0;
         for (User item : users) {
             int id = Integer.parseInt(item.getId());
-            if (max < id){
+            if (max < id) {
                 max = id;
             }
         }
@@ -36,11 +36,41 @@ public class RepositoryFile implements Repository {
         String id = String.format("%d", newId);
         user.setId(id);
         users.add(user);
+        saveUser(user, users);
+        return id;
+    }
+
+    public void updateUser(User user) {
+        deleteUser(user.getId());
+        List<User> users = getAllUsers();
+        saveUser(user, users);
+    }
+
+    private void saveUser(User user, List<User> users) {
+        users.add(user);
+        saveUsers(users);
+    }
+
+    public void deleteUser(String userId) {
+        List<User> users = getAllUsers();
+        users.remove(findUser(userId, users));
+        saveUsers(users);
+    }
+
+    private User findUser(String userId, List<User> users) {
+        for (User user : users) {
+            if (user.getId().equals(userId)) {
+                return user;
+            }
+        }
+        throw new IllegalStateException("User not found");
+    }
+
+    private void saveUsers(List<User> users) {
         List<String> lines = new ArrayList<>();
-        for (User item: users) {
+        for (User item : users) {
             lines.add(mapper.map(item));
         }
         fileOperation.saveAllLines(lines);
-        return id;
     }
 }
